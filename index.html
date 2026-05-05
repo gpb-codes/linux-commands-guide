@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Interactiva de Comandos Linux</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #0d1117;
+            color: #c9d1d9;
+            min-height: 100vh;
+        }
+        header {
+            background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 1px solid #30363d;
+        }
+        h1 {
+            color: #58a6ff;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            color: #8b949e;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .search-box {
+            margin-bottom: 2rem;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 1rem;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            color: #c9d1d9;
+            font-size: 1rem;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: #58a6ff;
+        }
+        .categories {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        .category-btn {
+            padding: 0.5rem 1rem;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 20px;
+            color: #c9d1d9;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .category-btn:hover, .category-btn.active {
+            background: #388bfd;
+            border-color: #388bfd;
+        }
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        .command-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .command-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            border-color: #58a6ff;
+        }
+        .command-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .command-name {
+            font-family: 'Fira Code', monospace;
+            color: #7ee787;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        .command-desc {
+            color: #8b949e;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        .terminal {
+            background: #0d1117;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            border: 1px solid #30363d;
+        }
+        .terminal-prompt {
+            color: #7ee787;
+        }
+        .terminal-command {
+            color: #c9d1d9;
+        }
+        .terminal-output {
+            color: #8b949e;
+            margin-top: 0.5rem;
+            white-space: pre-wrap;
+        }
+        .try-btn {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: #238636;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .try-btn:hover {
+            background: #2ea043;
+        }
+        .interactive-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #161b22;
+            border-top: 1px solid #30363d;
+            padding: 1.5rem;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+        .interactive-panel.open {
+            transform: translateY(0);
+        }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: #c9d1d9;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .mock-terminal {
+            background: #0d1117;
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 200px;
+            font-family: 'Fira Code', monospace;
+        }
+        .mock-input {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .mock-input input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #c9d1d9;
+            font-family: 'Fira Code', monospace;
+            font-size: 1rem;
+        }
+        .mock-input input:focus {
+            outline: none;
+        }
+        .mock-output {
+            margin-top: 1rem;
+            color: #8b949e;
+            white-space: pre-wrap;
+        }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #8b949e;
+            border-top: 1px solid #30363d;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🐧 Guía Interactiva de Comandos Linux</h1>
+        <p class="subtitle">Aprende los comandos esenciales de Linux de forma práctica</p>
+    </header>
+
+    <div class="container">
+        <div class="search-box">
+            <input type="text" id="search" placeholder="Buscar comando..." oninput="filterCommands()">
+        </div>
+
+        <div class="categories">
+            <button class="category-btn active" onclick="filterCategory('all')">Todos</button>
+            <button class="category-btn" onclick="filterCategory('filesystem')">Sistema de archivos</button>
+            <button class="category-btn" onclick="filterCategory('process')">Procesos</button>
+            <button class="category-btn" onclick="filterCategory('network')">Red</button>
+            <button class="category-btn" onclick="filterCategory('text')">Texto</button>
+            <button class="category-btn" onclick="filterCategory('permissions')">Permisos</button>
+        </div>
+
+        <div class="commands-grid" id="commandsGrid"></div>
+    </div>
+
+    <div class="interactive-panel" id="interactivePanel">
+        <div class="panel-header">
+            <h3>💻 Terminal Interactivo</h3>
+            <button class="close-btn" onclick="closePanel()">×</button>
+        </div>
+        <div class="mock-terminal">
+            <div class="mock-output" id="terminalOutput">Bienvenido al terminal interactivo. Escribe un comando para comenzar.</div>
+            <div class="mock-input">
+                <span class="terminal-prompt">user@linux:~$ </span>
+                <input type="text" id="commandInput" placeholder="Escribe un comando..." onkeypress="handleEnter(event)">
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Creado para aprender Linux • Desplegado en GitHub Pages</p>
+    </footer>
+
+    <script>
+        const commands = [
+            {
+                name: "ls",
+                category: "filesystem",
+                description: "Lista archivos y directorios",
+                example: "ls -la",
+                output: "total 48\ndrwxr-xr-x  2 user user 4096 May  5 10:00 .\nddrwxr-xr-x  1 user user 4096 May  5 09:00 ..\n-rw-r--r--  1 user user  220 May  5 10:00 .bashrc\ndrwxr-xr-x  2 user user 4096 May  5 10:00 Documents\ndrwxr-xr-x  2 user user user 4096 May  5 10:00 Downloads"
+            },
+            {
+                name: "cd",
+                category: "filesystem",
+                description: "Cambia el directorio actual",
+                example: "cd Documents",
+                output: "Cambia al directorio Documents"
+            },
+            {
+                name: "pwd",
+                category: "filesystem",
+                description: "Muestra el directorio actual",
+                example: "pwd",
+                output: "/home/user"
+            },
+            {
+                name: "mkdir",
+                category: "filesystem",
+                description: "Crea un nuevo directorio",
+                example: "mkdir nueva_carpeta",
+                output: "Directorio creado: nueva_carpeta"
+            },
+            {
+                name: "rm",
+                category: "filesystem",
+                description: "Elimina archivos o directorios",
+                example: "rm archivo.txt",
+                output: "Archivo eliminado"
+            },
+            {
+                name: "cp",
+                category: "filesystem",
+                description: "Copia archivos o directorios",
+                example: "cp origen.txt destino.txt",
+                output: "Archivo copiado"
+            },
+            {
+                name: "mv",
+                category: "filesystem",
+                description: "Mueve o renombra archivos",
+                example: "mv viejo.txt nuevo.txt",
+                output: "Archivo renombrado"
+            },
+            {
+                name: "cat",
+                category: "text",
+                description: "Muestra el contenido de archivos",
+                example: "cat archivo.txt",
+                output: "Contenido del archivo..."
+            },
+            {
+                name: "grep",
+                category: "text",
+                description: "Busca patrones en texto",
+                example: "grep 'palabra' archivo.txt",
+                output: "línea 1: palabra encontrada\nlínea 5: palabra encontrada"
+            },
+            {
+                name: "chmod",
+                category: "permissions",
+                description: "Cambia permisos de archivos",
+                example: "chmod 755 script.sh",
+                output: "Permisos cambiados"
+            },
+            {
+                name: "chown",
+                category: "permissions",
+                description: "Cambia propietario de archivos",
+                example: "chown user:group archivo",
+                output: "Propietario cambiado"
+            },
+            {
+                name: "ps",
+                category: "process",
+                description: "Muestra procesos en ejecución",
+                example: "ps aux",
+                output: "USER PID %CPU %MEM VSZ RSS TTY STAT START TIME COMMAND\nroot 1 0.0 0.0 1234 567 ? Ss 10:00 0:00 /init"
+            },
+            {
+                name: "top",
+                category: "process",
+                description: "Muestra procesos en tiempo real",
+                example: "top",
+                output: "Tasks: 1 running, 0 sleeping\nCpu(s): 5.2% us, 2.1% sy\nMem: 1024M used, 2048M free"
+            },
+            {
+                name: "kill",
+                category: "process",
+                description: "Termina un proceso",
+                example: "kill 1234",
+                output: "Proceso 1234 terminado"
+            },
+            {
+                name: "ping",
+                category: "network",
+                description: "Verifica conectividad",
+                example: "ping google.com",
+                output: "PING google.com (142.250.80.46): 56 data bytes\n64 bytes from 142.250.80.46: icmp_seq=0 ttl=115 time=14.2 ms"
+            },
+            {
+                name: "curl",
+                category: "network",
+                description: "Hace peticiones HTTP",
+                example: "curl https://api.example.com",
+                output: "{\"status\": \"success\", \"data\": ...}"
+            },
+            {
+                name: "ssh",
+                category: "network",
+                description: "Conexión remota segura",
+                example: "ssh usuario@servidor",
+                output: "Conectando a servidor..."
+            },
+            {
+                name: "tar",
+                category: "filesystem",
+                description: "Comprime y extrae archivos",
+                example: "tar -czf archivo.tar.gz carpeta",
+                output: "Archivo comprimido exitosamente"
+            },
+            {
+                name: "find",
+                category: "filesystem",
+                description: "Busca archivos en el sistema",
+                example: "find . -name '*.txt'",
+                output: "./documentos/texto.txt\n./notas.txt"
+            },
+            {
+                name: "df",
+                category: "filesystem",
+                description: "Muestra espacio en disco",
+                example: "df -h",
+                output: "Filesystem Size Used Avail Use% Mounted on\n/dev/sda1 50G 20G 30G 40% /"
+            }
+        ];
+
+        function renderCommands(filter = 'all', search = '') {
+            const grid = document.getElementById('commandsGrid');
+            grid.innerHTML = '';
+
+            const filtered = commands.filter(cmd => {
+                const matchesCategory = filter === 'all' || cmd.category === filter;
+                const matchesSearch = cmd.name.toLowerCase().includes(search.toLowerCase()) ||
+                    cmd.description.toLowerCase().includes(search.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+
+            filtered.forEach(cmd => {
+                const card = document.createElement('div');
+                card.className = 'command-card';
+                card.innerHTML = `
+                    <div class="command-header">
+                        <span class="command-name">${cmd.name}</span>
+                    </div>
+                    <p class="command-desc">${cmd.description}</p>
+                    <div class="terminal">
+                        <div class="terminal-prompt">$</div>
+                        <div class="terminal-command">${cmd.example}</div>
+                        <div class="terminal-output">${cmd.output}</div>
+                    </div>
+                    <button class="try-btn" onclick="openPanel('${cmd.name}', '${cmd.example}', \`${cmd.output}\`)">¡Pruébalo!</button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterCategory(category) {
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            const search = document.getElementById('search').value;
+            renderCommands(category, search);
+        }
+
+        function filterCommands() {
+            const category = document.querySelector('.category-btn.active').textContent.toLowerCase();
+            const categoryMap = {
+                'todos': 'all',
+                'sistema de archivos': 'filesystem',
+                'procesos': 'process',
+                'red': 'network',
+                'texto': 'text',
+                'permisos': 'permissions'
+            };
+            const cat = categoryMap[category] || 'all';
+            const search = document.getElementById('search').value;
+            renderCommands(cat, search);
+        }
+
+        function openPanel(name, example, output) {
+            const panel = document.getElementById('interactivePanel');
+            const outputDiv = document.getElementById('terminalOutput');
+            const input = document.getElementById('commandInput');
+
+            outputDiv.innerHTML = `💡 Demo: ${name}\n📝 ${example}\n\n${output}`;
+            panel.classList.add('open');
+            input.focus();
+        }
+
+        function closePanel() {
+            document.getElementById('interactivePanel').classList.remove('open');
+        }
+
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                const input = event.target.value;
+                const outputDiv = document.getElementById('terminalOutput');
+                outputDiv.innerHTML += `\n\n<span style="color:#7ee787">user@linux:~$</span> ${input}\n\n✅ Este es un simulador. En un entorno Linux real, el comando se ejecutaría aquí.`;
+                event.target.value = '';
+            }
+        }
+
+        renderCommands();
+    </script>
+</body>
+</html>
