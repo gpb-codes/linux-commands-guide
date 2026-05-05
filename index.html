@@ -667,6 +667,27 @@
             text-shadow: 0 0 10px var(--rick-green);
         }
 
+        .download-btn {
+            margin-top: 1rem;
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: 1px solid var(--rick-green);
+            border-radius: 4px;
+            color: var(--rick-green);
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .download-btn:hover {
+            background: var(--rick-green);
+            color: var(--bg-dark);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
+        }
+
         .stats {
             display: flex;
             justify-content: center;
@@ -1031,6 +1052,9 @@
             </div>
         </div>
         <p>Construido con <i class="fas fa-heart"></i> para la comunidad Linux | <a href="https://github.com/gpb-codes/linux-commands-guide">GitHub</a></p>
+        <button class="download-btn" onclick="downloadGuide()">
+            <i class="fas fa-download"></i> Descargar Guía PDF
+        </button>
     </footer>
 
     <script>
@@ -1380,6 +1404,261 @@ EDITOR=vim`,
 
         createParticles();
         renderCommands();
+
+        function downloadGuide() {
+            const guideHTML = `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Guía de Comandos Linux</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        @page {
+            size: A4;
+            margin: 0.5cm;
+        }
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            line-height: 1.3;
+            color: #1a1a2e;
+            background: #f5f5f5;
+            padding: 0.5cm;
+        }
+        
+        .guide-container {
+            background: white;
+            padding: 0.8cm;
+            border: 2px solid #00ff41;
+            border-radius: 8px;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #00ff41;
+            padding-bottom: 0.5cm;
+            margin-bottom: 0.5cm;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #00ff41;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 10px;
+            margin-top: 0.2cm;
+        }
+        
+        .columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5cm;
+        }
+        
+        .column {
+            break-inside: avoid;
+        }
+        
+        h2 {
+            font-size: 12px;
+            color: #00ff41;
+            border-bottom: 1px solid #00ff41;
+            padding-bottom: 0.2cm;
+            margin-bottom: 0.3cm;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0.4cm;
+        }
+        
+        th, td {
+            padding: 0.15cm 0.2cm;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background: #00ff41;
+            color: white;
+            font-weight: 600;
+            font-size: 8px;
+            text-transform: uppercase;
+        }
+        
+        td {
+            font-size: 8px;
+        }
+        
+        .cmd {
+            color: #00ff41;
+            font-weight: 700;
+        }
+        
+        .desc {
+            color: #555;
+            font-size: 7px;
+        }
+        
+        .perm-table td:first-child {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .perm-table td:nth-child(2) {
+            color: #00ff41;
+            font-weight: 600;
+        }
+        
+        .footer {
+            margin-top: 0.5cm;
+            padding-top: 0.3cm;
+            border-top: 1px solid #00ff41;
+            text-align: center;
+            font-size: 8px;
+            color: #666;
+        }
+        
+        .footer span {
+            color: #00ff41;
+        }
+    </style>
+</head>
+<body>
+    <div class="guide-container">
+        <div class="header">
+            <h1>Wubba Lubba Dub-Dub</h1>
+            <p>Guía de Comandos Linux - Terminal Interactiva</p>
+        </div>
+        
+        <div class="columns">
+            <div class="column">
+                <h2>Archivos</h2>
+                <table>
+                    <tr><th>Comando</th><th>Descripción</th></tr>
+                    <tr><td class="cmd">ls</td><td class="desc">Lista archivos</td></tr>
+                    <tr><td class="cmd">cd</td><td class="desc">Cambiar directorio</td></tr>
+                    <tr><td class="cmd">pwd</td><td class="desc">Directorio actual</td></tr>
+                    <tr><td class="cmd">mkdir</td><td class="desc">Crear directorio</td></tr>
+                    <tr><td class="cmd">rm</td><td class="desc">Eliminar archivo</td></tr>
+                    <tr><td class="cmd">cp</td><td class="desc">Copiar archivo</td></tr>
+                    <tr><td class="cmd">mv</td><td class="desc">Mover/Renombrar</td></tr>
+                    <tr><td class="cmd">touch</td><td class="desc">Crear archivo vacío</td></tr>
+                    <tr><td class="cmd">ln</td><td class="desc">Crear enlace</td></tr>
+                    <tr><td class="cmd">find</td><td class="desc">Buscar archivos</td></tr>
+                    <tr><td class="cmd">tar</td><td class="desc">Comprimir/Extraer</td></tr>
+                </table>
+                
+                <h2>Texto</h2>
+                <table>
+                    <tr><th>Comando</th><th>Descripción</th></tr>
+                    <tr><td class="cmd">cat</td><td class="desc">Mostrar contenido</td></tr>
+                    <tr><td class="cmd">head</td><td class="desc">Primeras líneas</td></tr>
+                    <tr><td class="cmd">tail</td><td class="desc">Últimas líneas</td></tr>
+                    <tr><td class="cmd">grep</td><td class="desc">Buscar patrones</td></tr>
+                    <tr><td class="cmd">wc</td><td class="desc">Contar líneas/palabras</td></tr>
+                    <tr><td class="cmd">sort</td><td class="desc">Ordenar líneas</td></tr>
+                    <tr><td class="cmd">awk</td><td class="desc">Procesar texto</td></tr>
+                    <tr><td class="cmd">sed</td><td class="desc">Editor stream</td></tr>
+                </table>
+                
+                <h2>Sistema</h2>
+                <table>
+                    <tr><th>Comando</th><th>Descripción</th></tr>
+                    <tr><td class="cmd">uname</td><td class="desc">Info del sistema</td></tr>
+                    <tr><td class="cmd">whoami</td><td class="desc">Usuario actual</td></tr>
+                    <tr><td class="cmd">hostname</td><td class="desc">Nombre del host</td></tr>
+                    <tr><td class="cmd">uptime</td><td><span style="color:#00ff41">Tiempo activo</span></td></tr>
+                    <tr><td class="cmd">date</td><td class="desc">Fecha y hora</td></tr>
+                    <tr><td class="cmd">free</td><td class="desc">Memoria RAM</td></tr>
+                    <tr><td class="cmd">df</td><td class="desc">Espacio en disco</td></tr>
+                </table>
+            </div>
+            
+            <div class="column">
+                <h2>Procesos</h2>
+                <table>
+                    <tr><th>Comando</th><th>Descripción</th></tr>
+                    <tr><td class="cmd">ps</td><td class="desc">Listar procesos</td></tr>
+                    <tr><td class="cmd">top</td><td class="desc">Monitor en tiempo real</td></tr>
+                    <tr><td class="cmd">htop</td><td class="desc">Monitor interactivo</td></tr>
+                    <tr><td class="cmd">kill</td><td class="desc">Terminar proceso</td></tr>
+                    <tr><td class="cmd">killall</td><td class="desc">Terminar por nombre</td></tr>
+                    <tr><td class="cmd">bg</td><td class="desc">Background proceso</td></tr>
+                    <tr><td class="cmd">fg</td><td class="desc">Foreground proceso</td></tr>
+                </table>
+                
+                <h2>Red</h2>
+                <table>
+                    <tr><th>Comando</th><th>Descripción</th></tr>
+                    <tr><td class="cmd">ping</td><td class="desc">Verificar conectividad</td></tr>
+                    <tr><td class="cmd">curl</td><td class="desc">Transferir datos</td></tr>
+                    <tr><td class="cmd">wget</td><td class="desc">Descargar archivos</td></tr>
+                    <tr><td class="cmd">ssh</td><td class="desc">Conexión remota</td></tr>
+                    <tr><td class="cmd">scp</td><td class="desc">Copiar remoto</td></tr>
+                    <tr><td class="cmd">ip</td><td class="desc">Configuración red</td></tr>
+                    <tr><td class="cmd">netstat</td><td class="desc">Estadísticas red</td></tr>
+                    <tr><td class="cmd">dig</td><td class="desc">Consultas DNS</td></tr>
+                </table>
+                
+                <h2>Permisos</h2>
+                <table class="perm-table">
+                    <tr><th>Permiso</th><th>Valor</th><th>Letra</th></tr>
+                    <tr><td>Lectura</td><td>4</td><td>r</td></tr>
+                    <tr><td>Escritura</td><td>2</td><td>w</td></tr>
+                    <tr><td>Ejecución</td><td>1</td><td>x</td></tr>
+                </table>
+                
+                <table class="perm-table">
+                    <tr><th>Nivel</th><th>Letra</th></tr>
+                    <tr><td>Usuario</td><td>u</td></tr>
+                    <tr><td>Grupo</td><td>g</td></tr>
+                    <tr><td>Otros</td><td>o</td></tr>
+                </table>
+                
+                <div style="background:#f0f0f0; padding:0.3cm; border-radius:4px; margin-top:0.3cm;">
+                    <strong style="color:#00ff41;">Ejemplo:</strong> chmod 755 script.sh<br>
+                    <span style="color:#666;">7=lectura+escritura+ejecución (dueño)</span><br>
+                    <span style="color:#666;">5=lectura+ejecución (grupo/otros)</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <span>></span> Creado para la comunidad Linux | <span>gpb-codes.github.io/linux-commands-guide</span>
+        </div>
+    </div>
+</body>
+</html>`;
+
+            const blob = new Blob([guideHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'guia-comandos-linux.pdf.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('Guía descargada! Para guardar como PDF:\n1. Abre el archivo descargado\n2. Presiona Ctrl+P (o Cmd+P en Mac)\n3. Selecciona "Guardar como PDF"');
+        }
     </script>
 </body>
 </html>
