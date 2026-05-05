@@ -466,44 +466,188 @@
             min-height: 250px;
             font-family: 'JetBrains Mono', monospace;
             border: 1px solid rgba(0, 212, 170, 0.2);
+            position: relative;
         }
 
-        .mock-output {
-            margin-bottom: 1.5rem;
-            color: var(--text-secondary);
-            white-space: pre-wrap;
-            line-height: 1.6;
+        .mock-terminal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.1) 2px,
+                rgba(0, 0, 0, 0.1) 4px
+            );
+            pointer-events: none;
+            border-radius: 16px;
+            opacity: 0.3;
         }
 
-        .mock-input {
+        .terminal-header {
             display: flex;
-            gap: 0.8rem;
-            align-items: center;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .mock-input span {
+        .terminal-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-btn.red { background: #ff5f56; }
+        .terminal-btn.yellow { background: #ffbd2e; }
+        .terminal-btn.green { background: #27ca40; }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+        }
+
+        .command-line {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.3rem;
+            flex-wrap: wrap;
+        }
+
+        .command-line .prompt {
             color: var(--terminal-green);
             font-weight: 600;
+            margin-right: 0.5rem;
         }
 
-        .mock-input input {
+        .command-line .path {
+            color: var(--terminal-cyan);
+            margin-right: 0.5rem;
+        }
+
+        .command-line .cmd {
+            color: var(--text-primary);
+        }
+
+        .output-line {
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+            line-height: 1.5;
+        }
+
+        .output-line.error {
+            color: var(--accent);
+        }
+
+        .output-line.success {
+            color: var(--terminal-green);
+        }
+
+        .output-line.info {
+            color: var(--terminal-cyan);
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--terminal-green);
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .input-line {
+            display: flex;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+
+        .input-line .prompt {
+            color: var(--terminal-green);
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .input-line .path {
+            color: var(--terminal-cyan);
+            margin-right: 0.5rem;
+        }
+
+        .input-area {
             flex: 1;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .input-area input {
             background: transparent;
             border: none;
             color: var(--text-primary);
             font-family: 'JetBrains Mono', monospace;
             font-size: 1rem;
-            padding: 0.5rem;
+            width: 100%;
+            caret-color: var(--terminal-green);
+            padding: 0;
         }
 
-        .mock-input input:focus {
+        .input-area input:focus {
             outline: none;
         }
 
-        .mock-input input::placeholder {
+        .input-area input::placeholder {
             color: rgba(255, 255, 255, 0.3);
+        }
+
+        .typing-effect {
+            overflow: hidden;
+        }
+
+        .suggestions {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            padding: 0.5rem;
+            display: none;
+            z-index: 10;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .suggestions.visible {
+            display: block;
+        }
+
+        .suggestion-item {
+            padding: 0.3rem 0.8rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .suggestion-item:hover {
+            background: var(--primary);
+            color: var(--bg-dark);
+        }
+
+        .suggestion-item .match {
+            color: var(--terminal-green);
+            font-weight: 600;
         }
 
         footer {
@@ -691,12 +835,23 @@
             <button class="close-btn" onclick="closePanel()"><i class="fas fa-times"></i></button>
         </div>
         <div class="mock-terminal">
-            <div class="mock-output" id="terminalOutput"><i class="fas fa-desktop"></i> Bienvenido al terminal interactivo
-
-Escribe un comando y presiona Enter para ver su magia en accion...</div>
-            <div class="mock-input">
-                <span>user@linux:~$</span>
-                <input type="text" id="commandInput" placeholder="Escribe tu comando..." onkeypress="handleEnter(event)">
+            <div class="terminal-header">
+                <div class="terminal-btn red"></div>
+                <div class="terminal-btn yellow"></div>
+                <div class="terminal-btn green"></div>
+                <div class="terminal-title">user@linux:~</div>
+            </div>
+            <div id="terminalContent">
+                <div class="output-line"><i class="fas fa-desktop"></i> Bienvenido al terminal interactivo</div>
+                <div class="output-line">Escribe un comando y presiona Enter para ejecutar</div>
+                <div class="output-line" style="margin-top: 0.5rem;">Usa <span style="color: var(--terminal-cyan);">Tab</span> para autocompletar, <span style="color: var(--terminal-cyan);">flechas</span> para historial</div>
+            </div>
+            <div class="input-line">
+                <span class="prompt">user@linux</span><span class="path">:~$</span>
+                <div class="input-area">
+                    <div class="suggestions" id="suggestions"></div>
+                    <input type="text" id="commandInput" autocomplete="off" spellcheck="false" onkeydown="handleKeyDown(event)">
+                </div>
             </div>
         </div>
     </div>
@@ -1001,12 +1156,116 @@ Escribe un comando y presiona Enter para ver su magia en accion...</div>
             renderCommands(cat, search);
         }
 
+        const commandHistory = [];
+        let historyIndex = -1;
+
+        const commandSimulations = {
+            'ls': () => `total 32
+drwxr-xr-x  5 user user 4096 May 05 10:00 .
+drwxr-xr-x  2 user user 4096 May 05 09:00 ..
+-rw-r--r--  1 user user  220 May 05 10:00 .bashrc
+drwxr-xr-x  2 user user 4096 May 05 10:00 Documents
+drwxr-xr-x  2 user user 4096 May 05 10:00 Downloads
+-rwxr-xr-x  1 user user  1024 May 05 10:00 script.sh
+drwxr-xr-x  2 user user 4096 May 05 10:00 Pictures`,
+            'ls -la': () => `total 64
+drwxr-xr-x  5 user user 4096 May 05 10:00 .
+drwxr-xr-x  1 user user 4096 May 05 09:00 ..
+-rw-------  1 user user  221 May 01 08:00 .bash_history
+-rw-r--r--  1 user user  220 May 05 10:00 .bashrc
+-rw-r--r--  1 user user   57 May 05 09:00 .profile
+drwxr-xr-x  2 user user 4096 May 05 10:00 Documents`,
+            'pwd': () => '/home/user',
+            'whoami': () => 'user',
+            'date': () => new Date().toString(),
+            'uname': () => 'Linux',
+            'uname -a': () => 'Linux linux 5.15.0-86-generic #86-Ubuntu SMP x86_64 GNU/Linux',
+            'hostname': () => 'linux',
+            'uptime': () => ` ${new Date().toLocaleTimeString()} up 42 days, 3:22, 2 users, load average: 0.52, 0.58, 0.59`,
+            'id': () => `uid=1000(user) gid=1000(user) groups=1000(user),4(adm),24(cdrom),27(sudo)`,
+            'echo': (args) => args || 'Hola mundo!',
+            'echo hola': () => 'Hola',
+            'clear': () => '**CLEAR**',
+            'exit': () => '**EXIT**',
+            'logout': () => '**EXIT**',
+            'help': () => `Comandos disponibles: ls, cd, pwd, cat, grep, chmod, chown, mkdir, rm, cp, mv, touch, find, ps, top, kill, ping, curl, ssh, tar, df, du, whoami, uname, hostname, date, uptime, clear, exit`,
+            'man': (args) => args ? `${args}(1)                   Manual del usuario\n\nNOMBRE\n       ${args} - ${args.toUpperCase()}\n\nSINOPSIS\n       ${args} [OPCIONES]\n\nDESCRIPCION\n       Manual de ${args}...` : 'Uso: man comando',
+            'cat': (args) => args ? `Contenido de ${args}...\n[simulacion de archivo]` : 'Uso: cat archivo',
+            'ps': () => `  PID TTY          TIME CMD
+    1 ?        00:00:02 systemd
+  432 ?        00:00:00 sshd
+  521 pts/0    00:00:00 bash
+  634 pts/0    00:00:00 node`,
+            'ps aux': () => `USER       PID %CPU %MEM VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.0  0.0 123456 567 ?      Ss   08:00   0:02 /sbin/init
+user       432  0.1  0.2 234567 89012 pts/0 Ss   08:30   0:00 bash
+user       521  2.1  1.5 345678 90123 pts/0 Sl   08:45   0:15 node`,
+            'top': () => `top - ${new Date().toLocaleTimeString()}
+Tasks: 156 total, 2 running, 154 sleeping
+%Cpu(s): 12.5 us, 3.2 sy, 0.0 ni, 84.3 id
+MiB Mem : 16384.0 total, 8192.0 free, 4096.0 used, 4096.0 buff/cache
+MiB Swap: 2048.0 total, 2048.0 free, 0.0 used
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+  634 user      20   0  345678 123456  56789 S  12.5   1.5   0:15.32 node
+  521 user      20   0   12345   67890  23456 S   2.1   0.8   0:05.21 bash`,
+            'df': () => `Sist.Arch.      Tamaño  Usado  Disp  Uso% Montado en
+/dev/sda1       100G   45G   55G  45% /
+tmpfs           2.0G     0  2.0G   0% /dev/shm
+/dev/sda2       500G  200G  300G  40% /home`,
+            'free': () => `              total    used    free  shared  buff/cache  available
+Mem:           16Gi   4.2Gi   8.1Gi   120Mi       3.7Gi      11Gi
+Swap:         2.0Gi      0B   2.0Gi`,
+            'env': () => `SHELL=/bin/bash
+TERM=xterm-256color
+USER=user
+HOME=/home/user
+PATH=/usr/local/bin:/usr/bin:/bin
+LANG=es_ES.UTF-8
+EDITOR=vim`,
+            'history': () => commandHistory.slice(-10).map((cmd, i) => ` ${commandHistory.length - 10 + i + 1}  ${cmd}`).join('\n'),
+            'which': (args) => args ? `/usr/bin/${args}` : 'Uso: which comando',
+            'type': (args) => args ? `${args} is /usr/bin/${args}` : 'Uso: type comando'
+        };
+
+        function simulateCommand(input) {
+            const trimmed = input.trim();
+            const parts = trimmed.split(' ');
+            const cmd = parts[0].toLowerCase();
+            const args = parts.slice(1).join(' ');
+
+            if (commandSimulations[trimmed]) {
+                return commandSimulations[trimmed]();
+            } else if (commandSimulations[cmd]) {
+                return commandSimulations[cmd](args);
+            }
+
+            const similarCmds = Object.keys(commandSimulations).filter(c => 
+                c.startsWith(cmd) || cmd.startsWith(c.substring(0, 3))
+            );
+
+            if (similarCmds.length > 0) {
+                return { error: `bash: ${cmd}: comando no encontrado. Quisiste decir: ${similarCmds.slice(0, 3).join(', ')}` };
+            }
+
+            return { error: `bash: ${cmd}: comando no encontrado` };
+        }
+
         function openPanel(name, example, output) {
             const panel = document.getElementById('interactivePanel');
-            const outputDiv = document.getElementById('terminalOutput');
+            const content = document.getElementById('terminalContent');
             const input = document.getElementById('commandInput');
 
-            outputDiv.innerHTML = `<i class="fas fa-tag"></i> Comando: ${name}\n<i class="fas fa-terminal"></i> Ejemplo: ${example}\n\n┌─ Salida ──────────────────────┐\n${output}\n└────────────────────────────────┘`;
+            content.innerHTML = `
+                <div class="output-line info"><i class="fas fa-tag"></i> Comando: <span style="color: var(--terminal-green);">${name}</span></div>
+                <div class="output-line info"><i class="fas fa-terminal"></i> Ejemplo: <span style="color: var(--terminal-cyan);">${example}</span></div>
+                <div class="output-line" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">───────────────────────────────────</div>
+                <div class="output-line">${output}</div>
+            `;
+            
+            input.value = name;
+            input.setSelectionRange(name.length, name.length);
+            
             panel.classList.add('open');
             input.focus();
         }
@@ -1015,13 +1274,94 @@ Escribe un comando y presiona Enter para ver su magia en accion...</div>
             document.getElementById('interactivePanel').classList.remove('open');
         }
 
-        function handleEnter(event) {
-            if (event.key === 'Enter') {
-                const input = event.target.value;
-                const outputDiv = document.getElementById('terminalOutput');
-                outputDiv.innerHTML += `\n\n┌─ user@linux:~$ ${input} ───┐\n│ <i class="fas fa-check"></i> Simulacro completado!  │\n│ En un sistema Linux real, │\n│ este comando se ejecutaria │\n│ aqui mismo.               │\n└───────────────────────────┘`;
-                event.target.value = '';
+        function addToHistory(cmd) {
+            if (cmd.trim() && (commandHistory.length === 0 || commandHistory[commandHistory.length - 1] !== cmd)) {
+                commandHistory.push(cmd);
             }
+            historyIndex = commandHistory.length;
+        }
+
+        function handleKeyDown(e) {
+            const input = e.target;
+            const suggestions = document.getElementById('suggestions');
+
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const partial = input.value;
+                const matches = Object.keys(commandSimulations).filter(cmd => 
+                    cmd.startsWith(partial) && partial.length > 0
+                );
+                if (matches.length === 1) {
+                    input.value = matches[0];
+                } else if (matches.length > 1) {
+                    suggestions.innerHTML = matches.map(cmd => 
+                        `<div class="suggestion-item" onclick="completeCommand('${cmd}')">${cmd}</div>`
+                    ).join('');
+                    suggestions.classList.add('visible');
+                }
+                return;
+            }
+
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    input.value = commandHistory[historyIndex] || '';
+                }
+                return;
+            }
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    input.value = commandHistory[historyIndex] || '';
+                } else {
+                    historyIndex = commandHistory.length;
+                    input.value = '';
+                }
+                return;
+            }
+
+            if (e.key === 'Enter') {
+                const cmd = input.value.trim();
+                if (!cmd) return;
+
+                addToHistory(cmd);
+                suggestions.classList.remove('visible');
+
+                const content = document.getElementById('terminalContent');
+                const result = simulateCommand(cmd);
+
+                if (result === '**CLEAR**') {
+                    content.innerHTML = '';
+                } else if (result === '**EXIT**') {
+                    closePanel();
+                    return;
+                } else {
+                    let output = `<div class="command-line"><span class="prompt">user@linux</span><span class="path">:~$</span><span class="cmd">${cmd}</span></div>`;
+                    
+                    if (result.error) {
+                        output += `<div class="output-line error">${result.error}</div>`;
+                    } else {
+                        output += `<div class="output-line">${result}</div>`;
+                    }
+
+                    content.innerHTML += output;
+                }
+
+                input.value = '';
+                content.scrollTop = content.scrollHeight;
+                return;
+            }
+
+            suggestions.classList.remove('visible');
+        }
+
+        function completeCommand(cmd) {
+            document.getElementById('commandInput').value = cmd;
+            document.getElementById('suggestions').classList.remove('visible');
+            document.getElementById('commandInput').focus();
         }
 
         createParticles();
