@@ -3,224 +3,605 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guía Interactiva de Comandos Linux</title>
+    <title>Linux Command Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #00d4aa;
+            --primary-glow: #00d4aa55;
+            --accent: #ff6b6b;
+            --accent-secondary: #ffd93d;
+            --bg-dark: #0a0a0f;
+            --bg-card: rgba(20, 20, 30, 0.7);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --border-glow: rgba(0, 212, 170, 0.3);
+            --terminal-green: #00ff88;
+            --terminal-cyan: #00d4ff;
+            --purple-glow: #8b5cf6;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: #0d1117;
-            color: #c9d1d9;
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
             min-height: 100vh;
+            overflow-x: hidden;
         }
+
+        .tux-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 80%, rgba(0, 212, 170, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(255, 107, 107, 0.05) 0%, transparent 60%);
+            z-index: 0;
+        }
+
+        .tux-watermark {
+            position: fixed;
+            bottom: 5%;
+            right: 5%;
+            width: 300px;
+            height: auto;
+            opacity: 0.15;
+            z-index: 0;
+            pointer-events: none;
+            filter: grayscale(100%) brightness(0.5);
+            animation: tuxFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes tuxFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: particleFloat 15s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
         header {
-            background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
-            padding: 2rem;
+            position: relative;
+            z-index: 10;
+            padding: 4rem 2rem;
             text-align: center;
-            border-bottom: 1px solid #30363d;
+            background: linear-gradient(180deg, rgba(0, 212, 170, 0.1) 0%, transparent 100%);
+            border-bottom: 1px solid var(--border-glow);
         }
-        h1 {
-            color: #58a6ff;
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--purple-glow));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 2rem;
+            box-shadow: 0 10px 40px var(--primary-glow);
+            animation: logoPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { box-shadow: 0 10px 40px var(--primary-glow); }
+            50% { box-shadow: 0 10px 60px var(--primary-glow), 0 0 80px var(--primary-glow); }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, var(--primary) 50%, var(--purple-glow) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 0.5rem;
+            letter-spacing: -1px;
         }
+
         .subtitle {
-            color: #8b949e;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-weight: 300;
         }
+
         .container {
-            max-width: 1200px;
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
             margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .search-section {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
             padding: 2rem;
-        }
-        .search-box {
             margin-bottom: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
         }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
         .search-box input {
             width: 100%;
-            padding: 1rem;
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            color: #c9d1d9;
-            font-size: 1rem;
+            padding: 1.2rem 1.5rem 1.2rem 3.5rem;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s;
         }
+
         .search-box input:focus {
             outline: none;
-            border-color: #58a6ff;
+            border-color: var(--primary);
+            box-shadow: 0 0 30px var(--primary-glow);
         }
+
+        .search-box::before {
+            content: '⌘';
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+        }
+
         .categories {
             display: flex;
-            gap: 1rem;
+            gap: 0.8rem;
             flex-wrap: wrap;
-            margin-bottom: 2rem;
+            justify-content: center;
         }
+
         .category-btn {
-            padding: 0.5rem 1rem;
-            background: #21262d;
-            border: 1px solid #30363d;
-            border-radius: 20px;
-            color: #c9d1d9;
+            padding: 0.8rem 1.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            color: var(--text-secondary);
             cursor: pointer;
-            transition: all 0.2s;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
+
+        .category-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .category-btn:hover::before {
+            left: 100%;
+        }
+
         .category-btn:hover, .category-btn.active {
-            background: #388bfd;
-            border-color: #388bfd;
+            background: linear-gradient(135deg, var(--primary), var(--purple-glow));
+            border-color: transparent;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px var(--primary-glow);
         }
+
         .commands-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
             gap: 1.5rem;
         }
+
         .command-card {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: transform 0.2s, box-shadow 0.2s;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
+
+        .command-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--purple-glow), var(--accent));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
         .command-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-            border-color: #58a6ff;
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--primary);
+            box-shadow: 
+                0 25px 60px rgba(0, 0, 0, 0.5),
+                0 0 40px var(--primary-glow),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
+
+        .command-card:hover::before {
+            opacity: 1;
+        }
+
         .command-header {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: space-between;
             margin-bottom: 1rem;
         }
+
         .command-name {
-            font-family: 'Fira Code', monospace;
-            color: #7ee787;
-            font-size: 1.1rem;
-            font-weight: bold;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--terminal-green), var(--terminal-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
+
+        .command-badge {
+            padding: 0.4rem 1rem;
+            background: rgba(0, 212, 170, 0.15);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
         .command-desc {
-            color: #8b949e;
-            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        .terminal {
+            background: linear-gradient(180deg, #0d0d15 0%, #1a1a25 100%);
+            border-radius: 16px;
+            padding: 1.2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .terminal::before {
+            content: '● ● ●';
+            position: absolute;
+            top: 0.5rem;
+            left: 1rem;
+            font-size: 0.6rem;
+            letter-spacing: 0.3rem;
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .terminal-content {
+            margin-top: 1rem;
+        }
+
+        .terminal-prompt {
+            color: var(--terminal-green);
+            font-weight: 600;
+        }
+
+        .terminal-command {
+            color: var(--text-primary);
+            margin-left: 0.5rem;
+        }
+
+        .terminal-output {
+            color: var(--text-secondary);
+            margin-top: 0.8rem;
+            white-space: pre-wrap;
             line-height: 1.5;
         }
-        .terminal {
-            background: #0d1117;
-            border-radius: 8px;
-            padding: 1rem;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.9rem;
-            border: 1px solid #30363d;
-        }
-        .terminal-prompt {
-            color: #7ee787;
-        }
-        .terminal-command {
-            color: #c9d1d9;
-        }
-        .terminal-output {
-            color: #8b949e;
-            margin-top: 0.5rem;
-            white-space: pre-wrap;
-        }
+
         .try-btn {
-            margin-top: 1rem;
-            padding: 0.5rem 1rem;
-            background: #238636;
+            margin-top: 1.5rem;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary), #00a88a);
             border: none;
-            border-radius: 6px;
+            border-radius: 14px;
             color: white;
             cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
             font-weight: 600;
-            transition: background 0.2s;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
         }
+
+        .try-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .try-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
         .try-btn:hover {
-            background: #2ea043;
+            transform: scale(1.02);
+            box-shadow: 0 15px 40px var(--primary-glow);
         }
+
+        .try-btn:active {
+            transform: scale(0.98);
+        }
+
         .interactive-panel {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: #161b22;
-            border-top: 1px solid #30363d;
-            padding: 1.5rem;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(30px);
+            border-top: 1px solid var(--border-glow);
+            padding: 2rem;
             transform: translateY(100%);
-            transition: transform 0.3s;
-            max-height: 50vh;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 60vh;
             overflow-y: auto;
+            z-index: 100;
         }
+
         .interactive-panel.open {
             transform: translateY(0);
         }
+
         .panel-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
+
+        .panel-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--terminal-green);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
         .close-btn {
-            background: transparent;
+            background: rgba(255, 255, 255, 0.1);
             border: none;
-            color: #c9d1d9;
+            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
             font-size: 1.5rem;
             cursor: pointer;
+            transition: all 0.3s;
         }
+
+        .close-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+
         .mock-terminal {
-            background: #0d1117;
-            border-radius: 8px;
-            padding: 1rem;
-            min-height: 200px;
-            font-family: 'Fira Code', monospace;
+            background: linear-gradient(180deg, #0d0d15 0%, #1a1a25 100%);
+            border-radius: 16px;
+            padding: 1.5rem;
+            min-height: 250px;
+            font-family: 'JetBrains Mono', monospace;
+            border: 1px solid rgba(0, 212, 170, 0.2);
         }
+
+        .mock-output {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
         .mock-input {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.8rem;
             align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
+
+        .mock-input span {
+            color: var(--terminal-green);
+            font-weight: 600;
+        }
+
         .mock-input input {
             flex: 1;
             background: transparent;
             border: none;
-            color: #c9d1d9;
-            font-family: 'Fira Code', monospace;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
             font-size: 1rem;
+            padding: 0.5rem;
         }
+
         .mock-input input:focus {
             outline: none;
         }
-        .mock-output {
-            margin-top: 1rem;
-            color: #8b949e;
-            white-space: pre-wrap;
+
+        .mock-input input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
         }
+
         footer {
+            position: relative;
+            z-index: 10;
             text-align: center;
-            padding: 2rem;
-            color: #8b949e;
-            border-top: 1px solid #30363d;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
             margin-top: 2rem;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--terminal-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            .commands-grid { grid-template-columns: 1fr; }
+            .categories { gap: 0.5rem; }
+            .category-btn { padding: 0.6rem 1.2rem; font-size: 0.85rem; }
+            .tux-watermark { width: 150px; bottom: 2%; right: 2%; }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        ::selection {
+            background: var(--primary);
+            color: var(--bg-dark);
         }
     </style>
 </head>
 <body>
+    <div class="tux-bg"></div>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/a/af/Tux.png" alt="Tux" class="tux-watermark">
+    
+    <div class="particles" id="particles"></div>
+
     <header>
-        <h1>🐧 Guía Interactiva de Comandos Linux</h1>
-        <p class="subtitle">Aprende los comandos esenciales de Linux de forma práctica</p>
+        <div class="logo-container">
+            <div class="logo-icon">⚡</div>
+        </div>
+        <h1>Linux Command Center</h1>
+        <p class="subtitle">Domina la terminal con tutorials interactivos</p>
     </header>
 
     <div class="container">
-        <div class="search-box">
-            <input type="text" id="search" placeholder="Buscar comando..." oninput="filterCommands()">
-        </div>
-
-        <div class="categories">
-            <button class="category-btn active" onclick="filterCategory('all')">Todos</button>
-            <button class="category-btn" onclick="filterCategory('filesystem')">Sistema de archivos</button>
-            <button class="category-btn" onclick="filterCategory('process')">Procesos</button>
-            <button class="category-btn" onclick="filterCategory('network')">Red</button>
-            <button class="category-btn" onclick="filterCategory('text')">Texto</button>
-            <button class="category-btn" onclick="filterCategory('permissions')">Permisos</button>
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="search" placeholder="Buscar comandos..." oninput="filterCommands()">
+            </div>
+            <div class="categories">
+                <button class="category-btn active" onclick="filterCategory('all')">全部 Todo</button>
+                <button class="category-btn" onclick="filterCategory('filesystem')">📁 Archivos</button>
+                <button class="category-btn" onclick="filterCategory('process')">⚙️ Procesos</button>
+                <button class="category-btn" onclick="filterCategory('network')">🌐 Red</button>
+                <button class="category-btn" onclick="filterCategory('text')">📝 Texto</button>
+                <button class="category-btn" onclick="filterCategory('permissions')">🔐 Permisos</button>
+            </div>
         </div>
 
         <div class="commands-grid" id="commandsGrid"></div>
@@ -228,165 +609,75 @@
 
     <div class="interactive-panel" id="interactivePanel">
         <div class="panel-header">
-            <h3>💻 Terminal Interactivo</h3>
-            <button class="close-btn" onclick="closePanel()">×</button>
+            <div class="panel-title">
+                <span>▶</span> Terminal Interactivo
+            </div>
+            <button class="close-btn" onclick="closePanel()">✕</button>
         </div>
         <div class="mock-terminal">
-            <div class="mock-output" id="terminalOutput">Bienvenido al terminal interactivo. Escribe un comando para comenzar.</div>
+            <div class="mock-output" id="terminalOutput">🖥️ Bienvenido al terminal interactivo
+
+Escribe un comando y presiona Enter para ver su magia en acción...</div>
             <div class="mock-input">
-                <span class="terminal-prompt">user@linux:~$ </span>
-                <input type="text" id="commandInput" placeholder="Escribe un comando..." onkeypress="handleEnter(event)">
+                <span>user@linux:~$</span>
+                <input type="text" id="commandInput" placeholder="Escribe tu comando..." onkeypress="handleEnter(event)">
             </div>
         </div>
     </div>
 
     <footer>
-        <p>Creado para aprender Linux • Desplegado en GitHub Pages</p>
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number">20</div>
+                <div class="stat-label">Comandos</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Categorías</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">∞</div>
+                <div class="stat-label">Posibilidades</div>
+            </div>
+        </div>
+        <p>Construido con ❤️ para la comunidad Linux | <a href="https://github.com/gpb-codes/linux-commands-guide">GitHub</a></p>
     </footer>
 
     <script>
         const commands = [
-            {
-                name: "ls",
-                category: "filesystem",
-                description: "Lista archivos y directorios",
-                example: "ls -la",
-                output: "total 48\ndrwxr-xr-x  2 user user 4096 May  5 10:00 .\nddrwxr-xr-x  1 user user 4096 May  5 09:00 ..\n-rw-r--r--  1 user user  220 May  5 10:00 .bashrc\ndrwxr-xr-x  2 user user 4096 May  5 10:00 Documents\ndrwxr-xr-x  2 user user user 4096 May  5 10:00 Downloads"
-            },
-            {
-                name: "cd",
-                category: "filesystem",
-                description: "Cambia el directorio actual",
-                example: "cd Documents",
-                output: "Cambia al directorio Documents"
-            },
-            {
-                name: "pwd",
-                category: "filesystem",
-                description: "Muestra el directorio actual",
-                example: "pwd",
-                output: "/home/user"
-            },
-            {
-                name: "mkdir",
-                category: "filesystem",
-                description: "Crea un nuevo directorio",
-                example: "mkdir nueva_carpeta",
-                output: "Directorio creado: nueva_carpeta"
-            },
-            {
-                name: "rm",
-                category: "filesystem",
-                description: "Elimina archivos o directorios",
-                example: "rm archivo.txt",
-                output: "Archivo eliminado"
-            },
-            {
-                name: "cp",
-                category: "filesystem",
-                description: "Copia archivos o directorios",
-                example: "cp origen.txt destino.txt",
-                output: "Archivo copiado"
-            },
-            {
-                name: "mv",
-                category: "filesystem",
-                description: "Mueve o renombra archivos",
-                example: "mv viejo.txt nuevo.txt",
-                output: "Archivo renombrado"
-            },
-            {
-                name: "cat",
-                category: "text",
-                description: "Muestra el contenido de archivos",
-                example: "cat archivo.txt",
-                output: "Contenido del archivo..."
-            },
-            {
-                name: "grep",
-                category: "text",
-                description: "Busca patrones en texto",
-                example: "grep 'palabra' archivo.txt",
-                output: "línea 1: palabra encontrada\nlínea 5: palabra encontrada"
-            },
-            {
-                name: "chmod",
-                category: "permissions",
-                description: "Cambia permisos de archivos",
-                example: "chmod 755 script.sh",
-                output: "Permisos cambiados"
-            },
-            {
-                name: "chown",
-                category: "permissions",
-                description: "Cambia propietario de archivos",
-                example: "chown user:group archivo",
-                output: "Propietario cambiado"
-            },
-            {
-                name: "ps",
-                category: "process",
-                description: "Muestra procesos en ejecución",
-                example: "ps aux",
-                output: "USER PID %CPU %MEM VSZ RSS TTY STAT START TIME COMMAND\nroot 1 0.0 0.0 1234 567 ? Ss 10:00 0:00 /init"
-            },
-            {
-                name: "top",
-                category: "process",
-                description: "Muestra procesos en tiempo real",
-                example: "top",
-                output: "Tasks: 1 running, 0 sleeping\nCpu(s): 5.2% us, 2.1% sy\nMem: 1024M used, 2048M free"
-            },
-            {
-                name: "kill",
-                category: "process",
-                description: "Termina un proceso",
-                example: "kill 1234",
-                output: "Proceso 1234 terminado"
-            },
-            {
-                name: "ping",
-                category: "network",
-                description: "Verifica conectividad",
-                example: "ping google.com",
-                output: "PING google.com (142.250.80.46): 56 data bytes\n64 bytes from 142.250.80.46: icmp_seq=0 ttl=115 time=14.2 ms"
-            },
-            {
-                name: "curl",
-                category: "network",
-                description: "Hace peticiones HTTP",
-                example: "curl https://api.example.com",
-                output: "{\"status\": \"success\", \"data\": ...}"
-            },
-            {
-                name: "ssh",
-                category: "network",
-                description: "Conexión remota segura",
-                example: "ssh usuario@servidor",
-                output: "Conectando a servidor..."
-            },
-            {
-                name: "tar",
-                category: "filesystem",
-                description: "Comprime y extrae archivos",
-                example: "tar -czf archivo.tar.gz carpeta",
-                output: "Archivo comprimido exitosamente"
-            },
-            {
-                name: "find",
-                category: "filesystem",
-                description: "Busca archivos en el sistema",
-                example: "find . -name '*.txt'",
-                output: "./documentos/texto.txt\n./notas.txt"
-            },
-            {
-                name: "df",
-                category: "filesystem",
-                description: "Muestra espacio en disco",
-                example: "df -h",
-                output: "Filesystem Size Used Avail Use% Mounted on\n/dev/sda1 50G 20G 30G 40% /"
-            }
+            { name: "ls", category: "filesystem", description: "Lista archivos y directorios con detalles", example: "ls -lah", output: "total 64\ndrwxr-xr-x  5 user user 4096 May 05 10:00 .\ndrwxr-xr-x  1 user user 4096 May 05 09:00 ..\n-rw-r--r--  1 user user  220 May 05 10:00 .bashrc\ndrwxr-xr-x  2 user user 4096 May 05 10:00 Documents\ndrwxr-xr-x  2 user user user 4096 May 05 10:00 Downloads\n-rwxr-xr-x  1 user user  1024 May 05 10:00 script.sh" },
+            { name: "cd", category: "filesystem", description: "Cambia el directorio de trabajo actual", example: "cd ~/Documentos/Proyectos", output: "Cambiando al directorio: /home/user/Documentos/Proyectos" },
+            { name: "pwd", category: "filesystem", description: "Muestra la ruta absoluta del directorio actual", example: "pwd", output: "/home/user/Documentos/Linux" },
+            { name: "mkdir", category: "filesystem", description: "Crea uno o varios directorios nuevos", example: "mkdir -p proyecto/src/components", output: "✓ Directorios creados: proyecto/src/components" },
+            { name: "rm", category: "filesystem", description: "Elimina archivos o directorios de forma recursiva", example: "rm -rf carpeta_vieja", output: "✓ Eliminación completada" },
+            { name: "cp", category: "filesystem", description: "Copia archivos o directorios preservando atributos", example: "cp -r origen/ destino/", output: "✓ Copia completada exitosamente" },
+            { name: "mv", category: "filesystem", description: "Mueve o renombra archivos y directorios", example: "mv archivo.old nuevo_nombre.txt", output: "✓ Archivo renombrado: nuevo_nombre.txt" },
+            { name: "cat", category: "text", description: "Muestra el contenido completo de archivos", example: "cat config.json", output: "{\n  \"name\": \"linux-guide\",\n  \"version\": \"1.0.0\"\n}" },
+            { name: "grep", category: "text", description: "Busca patrones complejos en archivos de texto", example: "grep -r 'error' /var/log", output: "/var/log/app.log:45: [ERROR] Connection failed\n/var/log/app.log:89: [ERROR] Timeout exceeded" },
+            { name: "chmod", category: "permissions", description: "Cambia permisos de archivos en formato octal", example: "chmod 755 script.sh", output: "✓ Permisos actualizados: -rwxr-xr-x" },
+            { name: "chown", category: "permissions", description: "Cambia propietario y grupo de archivos", example: "chown user:www-data /var/www", output: "✓ Propietario cambiado a user:www-data" },
+            { name: "ps", category: "process", description: "Lista todos los procesos del sistema", example: "ps aux | head -10", output: "USER PID %CPU %MEM VSZ RSS TTY STAT START TIME COMMAND\nroot 1 0.0 0.0 123456 567 ? Ss 08:00 0:02 /sbin/init\nuser 1234 2.1 1.5 234567 89012 ? Ssl 08:30 0:15 chrome" },
+            { name: "top", category: "process", description: "Monitor de procesos en tiempo real", example: "top -n 1", output: "top - 10:30:01 up 5 days, 3:22\nTasks: 156 total, 2 running, 154 sleeping\n%Cpu(s): 12.5 us, 3.2 sy, 0.0 ni\nMiB Mem : 16384.0 total, 8192.0 free" },
+            { name: "kill", category: "process", description: "Envía señales a procesos para terminarlos", example: "kill -9 12345", output: "✓ Proceso 12345 terminado forzosamente" },
+            { name: "ping", category: "network", description: "Verifica conectividad con latencia", example: "ping -c 4 google.com", output: "PING google.com (142.250.80.46): 56 data bytes\n64 bytes from 142.250.80.46: icmp_seq=0 ttl=115 time=14.2 ms\n64 bytes from 142.250.80.46: icmp_seq=1 ttl=115 time=13.8 ms" },
+            { name: "curl", category: "network", description: "Transfiere datos desde/hacia servidores", example: "curl -X GET https://api.github.com", output: "{\n  \"current_user_url\": \"https://api.github.com/user\",\n  \"repository_url\": \"https://api.github.com/repos\"\n}" },
+            { name: "ssh", category: "network", description: "Conexión segura encriptada a servidores remotos", example: "ssh -p 22 user@192.168.1.100", output: "Estableciendo conexión segura...\nAuthenticated using public key." },
+            { name: "tar", category: "filesystem", description: "Comprime y extrae archivos en múltiples formatos", example: "tar -czvf backup.tar.gz ./carpeta", output: "a ./carpeta\ncarpeta/file1.txt\ncarpeta/file2.txt\ntar: backup.tar.gz creado" },
+            { name: "find", category: "filesystem", description: "Busca archivos con criterios avanzados de búsqueda", example: "find . -name '*.log' -mtime -7", output: "./logs/app.log\n./logs/error.log\n./backup/old.log" },
+            { name: "df", category: "filesystem", description: "Muestra uso de disco de todos los sistemas de archivos", example: "df -h", output: "Filesystem      Size  Used Avail Use% Mounted on\n/dev/sda1       100G   45G   55G  45% /\ntmpfs           2.0G     0  2.0G   0% /dev/shm" }
         ];
+
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
 
         function renderCommands(filter = 'all', search = '') {
             const grid = document.getElementById('commandsGrid');
@@ -399,20 +690,24 @@
                 return matchesCategory && matchesSearch;
             });
 
-            filtered.forEach(cmd => {
+            filtered.forEach((cmd, index) => {
                 const card = document.createElement('div');
                 card.className = 'command-card';
+                card.style.animationDelay = (index * 0.1) + 's';
                 card.innerHTML = `
                     <div class="command-header">
                         <span class="command-name">${cmd.name}</span>
+                        <span class="command-badge">${cmd.category}</span>
                     </div>
                     <p class="command-desc">${cmd.description}</p>
                     <div class="terminal">
-                        <div class="terminal-prompt">$</div>
-                        <div class="terminal-command">${cmd.example}</div>
-                        <div class="terminal-output">${cmd.output}</div>
+                        <div class="terminal-content">
+                            <span class="terminal-prompt">$</span>
+                            <span class="terminal-command">${cmd.example}</span>
+                            <div class="terminal-output">${cmd.output}</div>
+                        </div>
                     </div>
-                    <button class="try-btn" onclick="openPanel('${cmd.name}', '${cmd.example}', \`${cmd.output}\`)">¡Pruébalo!</button>
+                    <button class="try-btn" onclick="openPanel('${cmd.name}', '${cmd.example}', \`${cmd.output}\`)">▶ Probar Comando</button>
                 `;
                 grid.appendChild(card);
             });
@@ -426,16 +721,16 @@
         }
 
         function filterCommands() {
-            const category = document.querySelector('.category-btn.active').textContent.toLowerCase();
+            const activeBtn = document.querySelector('.category-btn.active');
             const categoryMap = {
-                'todos': 'all',
-                'sistema de archivos': 'filesystem',
-                'procesos': 'process',
-                'red': 'network',
-                'texto': 'text',
-                'permisos': 'permissions'
+                '全部 Todo': 'all',
+                '📁 Archivos': 'filesystem',
+                '⚙️ Procesos': 'process',
+                '🌐 Red': 'network',
+                '📝 Texto': 'text',
+                '🔐 Permisos': 'permissions'
             };
-            const cat = categoryMap[category] || 'all';
+            const cat = categoryMap[activeBtn.textContent] || 'all';
             const search = document.getElementById('search').value;
             renderCommands(cat, search);
         }
@@ -445,7 +740,7 @@
             const outputDiv = document.getElementById('terminalOutput');
             const input = document.getElementById('commandInput');
 
-            outputDiv.innerHTML = `💡 Demo: ${name}\n📝 ${example}\n\n${output}`;
+            outputDiv.innerHTML = `📌 Comando: ${name}\n💻 Ejemplo: ${example}\n\n┌─ Salida ──────────────────────┐\n${output}\n└────────────────────────────────┘`;
             panel.classList.add('open');
             input.focus();
         }
@@ -458,11 +753,12 @@
             if (event.key === 'Enter') {
                 const input = event.target.value;
                 const outputDiv = document.getElementById('terminalOutput');
-                outputDiv.innerHTML += `\n\n<span style="color:#7ee787">user@linux:~$</span> ${input}\n\n✅ Este es un simulador. En un entorno Linux real, el comando se ejecutaría aquí.`;
+                outputDiv.innerHTML += `\n\n┌─ user@linux:~$ ${input} ───┐\n│ ✅ Simulacro completado!  │\n│ En un sistema Linux real, │\n│ este comando se ejecutaría │\n│ aquí mismo.               │\n└───────────────────────────┘`;
                 event.target.value = '';
             }
         }
 
+        createParticles();
         renderCommands();
     </script>
 </body>
