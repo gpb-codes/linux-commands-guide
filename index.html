@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Linux Command Center</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #00d4aa;
@@ -573,6 +574,80 @@
             background: var(--primary);
             color: var(--bg-dark);
         }
+
+        .permissions-guide {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 1200px;
+        }
+
+        .permissions-guide h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--primary), var(--purple-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .perm-section {
+            margin-bottom: 2rem;
+        }
+
+        .perm-section h3 {
+            color: var(--accent-secondary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .perm-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+
+        .perm-table th,
+        .perm-table td {
+            padding: 0.8rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .perm-table th {
+            background: rgba(0, 212, 170, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .perm-table code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            color: var(--terminal-cyan);
+        }
+
+        .perm-explanation {
+            list-style: none;
+            padding: 0;
+            margin-top: 1rem;
+        }
+
+        .perm-explanation li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+        }
+
+        .perm-explanation code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            color: var(--terminal-green);
+        }
     </style>
 </head>
 <body>
@@ -583,7 +658,7 @@
 
     <header>
         <div class="logo-container">
-            <div class="logo-icon">⚡</div>
+            <div class="logo-icon"><i class="fas fa-bolt"></i></div>
         </div>
         <h1>Linux Command Center</h1>
         <p class="subtitle">Domina la terminal con tutorials interactivos</p>
@@ -595,12 +670,13 @@
                 <input type="text" id="search" placeholder="Buscar comandos..." oninput="filterCommands()">
             </div>
             <div class="categories">
-                <button class="category-btn active" onclick="filterCategory('all')">全部 Todo</button>
-                <button class="category-btn" onclick="filterCategory('filesystem')">📁 Archivos</button>
-                <button class="category-btn" onclick="filterCategory('process')">⚙️ Procesos</button>
-                <button class="category-btn" onclick="filterCategory('network')">🌐 Red</button>
-                <button class="category-btn" onclick="filterCategory('text')">📝 Texto</button>
-                <button class="category-btn" onclick="filterCategory('permissions')">🔐 Permisos</button>
+                <button class="category-btn active" onclick="filterCategory('all')"><i class="fas fa-th"></i> Todo</button>
+                <button class="category-btn" onclick="filterCategory('filesystem')"><i class="fas fa-folder"></i> Archivos</button>
+                <button class="category-btn" onclick="filterCategory('process')"><i class="fas fa-cog"></i> Procesos</button>
+                <button class="category-btn" onclick="filterCategory('network')"><i class="fas fa-network-wired"></i> Red</button>
+                <button class="category-btn" onclick="filterCategory('text')"><i class="fas fa-file-alt"></i> Texto</button>
+                <button class="category-btn" onclick="filterCategory('permissions')"><i class="fas fa-lock"></i> Permisos</button>
+                <button class="category-btn" onclick="filterCategory('system')"><i class="fas fa-desktop"></i> Sistema</button>
             </div>
         </div>
 
@@ -610,14 +686,14 @@
     <div class="interactive-panel" id="interactivePanel">
         <div class="panel-header">
             <div class="panel-title">
-                <span>▶</span> Terminal Interactivo
+                <i class="fas fa-play"></i> Terminal Interactivo
             </div>
-            <button class="close-btn" onclick="closePanel()">✕</button>
+            <button class="close-btn" onclick="closePanel()"><i class="fas fa-times"></i></button>
         </div>
         <div class="mock-terminal">
-            <div class="mock-output" id="terminalOutput">🖥️ Bienvenido al terminal interactivo
+            <div class="mock-output" id="terminalOutput"><i class="fas fa-desktop"></i> Bienvenido al terminal interactivo
 
-Escribe un comando y presiona Enter para ver su magia en acción...</div>
+Escribe un comando y presiona Enter para ver su magia en accion...</div>
             <div class="mock-input">
                 <span>user@linux:~$</span>
                 <input type="text" id="commandInput" placeholder="Escribe tu comando..." onkeypress="handleEnter(event)">
@@ -625,14 +701,159 @@ Escribe un comando y presiona Enter para ver su magia en acción...</div>
         </div>
     </div>
 
+    <section class="permissions-guide">
+        <h2><i class="fas fa-graduation-cap"></i> Guia de Permisos en Linux</h2>
+        
+        <div class="perm-section">
+            <h3>Permisos Básicos</h3>
+            <table class="perm-table">
+                <thead>
+                    <tr>
+                        <th>Permiso</th>
+                        <th>Letra</th>
+                        <th>Valor</th>
+                        <th>Qué permite</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Lectura</td>
+                        <td><code>r</code></td>
+                        <td><code>4</code></td>
+                        <td>Ver el contenido</td>
+                    </tr>
+                    <tr>
+                        <td>Escritura</td>
+                        <td><code>w</code></td>
+                        <td><code>2</code></td>
+                        <td>Modificar o borrar</td>
+                    </tr>
+                    <tr>
+                        <td>Ejecución</td>
+                        <td><code>x</code></td>
+                        <td><code>1</code></td>
+                        <td>Ejecutar el archivo</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="perm-section">
+            <h3>Estado del Permiso</h3>
+            <table class="perm-table">
+                <thead>
+                    <tr>
+                        <th>Estado</th>
+                        <th>Binario</th>
+                        <th>Símbolo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Inactivo</td>
+                        <td><code>0</code></td>
+                        <td><code>-</code></td>
+                    </tr>
+                    <tr>
+                        <td>Activo</td>
+                        <td><code>1</code></td>
+                        <td><code>r / w / x</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="perm-section">
+            <h3>Reglas de Combinación</h3>
+            <table class="perm-table">
+                <thead>
+                    <tr>
+                        <th>Combinación</th>
+                        <th>Cálculo</th>
+                        <th>Resultado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Solo lectura</td>
+                        <td><code>4</code></td>
+                        <td><code>4</code></td>
+                    </tr>
+                    <tr>
+                        <td>Lectura + escritura</td>
+                        <td><code>4 + 2</code></td>
+                        <td><code>6</code></td>
+                    </tr>
+                    <tr>
+                        <td>Lectura + ejecución</td>
+                        <td><code>4 + 1</code></td>
+                        <td><code>5</code></td>
+                    </tr>
+                    <tr>
+                        <td>Todos los permisos</td>
+                        <td><code>4 + 2 + 1</code></td>
+                        <td><code>7</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="perm-section">
+            <h3>A quién se aplican</h3>
+            <table class="perm-table">
+                <thead>
+                    <tr>
+                        <th>Nivel</th>
+                        <th>Letra</th>
+                        <th>Quién es</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Usuario</td>
+                        <td><code>u</code></td>
+                        <td>Dueño del archivo</td>
+                    </tr>
+                    <tr>
+                        <td>Grupo</td>
+                        <td><code>g</code></td>
+                        <td>Grupo del usuario</td>
+                    </tr>
+                    <tr>
+                        <td>Otros</td>
+                        <td><code>o</code></td>
+                        <td>Todos los demás</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="perm-section">
+            <h3>Ejemplo Práctico</h3>
+            <div class="terminal">
+                <div class="terminal-content">
+                    <span class="terminal-prompt">$</span>
+                    <span class="terminal-command">ls -l script.sh</span>
+                    <div class="terminal-output">-rwxr-xr-x 1 user grupo 1024 May 05 10:00 script.sh</div>
+                </div>
+            </div>
+            <ul class="perm-explanation">
+                <li><code>-</code> = Archivo regular (d para directorio)</li>
+                <li><code>rwx</code> = Dueño: lectura, escritura, ejecución (7)</li>
+                <li><code>r-x</code> = Grupo: lectura, ejecución (5)</li>
+                <li><code>r-x</code> = Otros: lectura, ejecución (5)</li>
+            </ul>
+        </div>
+    </section>
+
     <footer>
         <div class="stats">
             <div class="stat-item">
-                <div class="stat-number">20</div>
+                <div class="stat-number">56</div>
                 <div class="stat-label">Comandos</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number">6</div>
+                <div class="stat-number">7</div>
                 <div class="stat-label">Categorías</div>
             </div>
             <div class="stat-item">
@@ -640,31 +861,75 @@ Escribe un comando y presiona Enter para ver su magia en acción...</div>
                 <div class="stat-label">Posibilidades</div>
             </div>
         </div>
-        <p>Construido con ❤️ para la comunidad Linux | <a href="https://github.com/gpb-codes/linux-commands-guide">GitHub</a></p>
+        <p>Construido con <i class="fas fa-heart"></i> para la comunidad Linux | <a href="https://github.com/gpb-codes/linux-commands-guide">GitHub</a></p>
     </footer>
 
     <script>
         const commands = [
-            { name: "ls", category: "filesystem", description: "Lista archivos y directorios con detalles", example: "ls -lah", output: "total 64\ndrwxr-xr-x  5 user user 4096 May 05 10:00 .\ndrwxr-xr-x  1 user user 4096 May 05 09:00 ..\n-rw-r--r--  1 user user  220 May 05 10:00 .bashrc\ndrwxr-xr-x  2 user user 4096 May 05 10:00 Documents\ndrwxr-xr-x  2 user user user 4096 May 05 10:00 Downloads\n-rwxr-xr-x  1 user user  1024 May 05 10:00 script.sh" },
-            { name: "cd", category: "filesystem", description: "Cambia el directorio de trabajo actual", example: "cd ~/Documentos/Proyectos", output: "Cambiando al directorio: /home/user/Documentos/Proyectos" },
-            { name: "pwd", category: "filesystem", description: "Muestra la ruta absoluta del directorio actual", example: "pwd", output: "/home/user/Documentos/Linux" },
-            { name: "mkdir", category: "filesystem", description: "Crea uno o varios directorios nuevos", example: "mkdir -p proyecto/src/components", output: "✓ Directorios creados: proyecto/src/components" },
-            { name: "rm", category: "filesystem", description: "Elimina archivos o directorios de forma recursiva", example: "rm -rf carpeta_vieja", output: "✓ Eliminación completada" },
-            { name: "cp", category: "filesystem", description: "Copia archivos o directorios preservando atributos", example: "cp -r origen/ destino/", output: "✓ Copia completada exitosamente" },
-            { name: "mv", category: "filesystem", description: "Mueve o renombra archivos y directorios", example: "mv archivo.old nuevo_nombre.txt", output: "✓ Archivo renombrado: nuevo_nombre.txt" },
-            { name: "cat", category: "text", description: "Muestra el contenido completo de archivos", example: "cat config.json", output: "{\n  \"name\": \"linux-guide\",\n  \"version\": \"1.0.0\"\n}" },
-            { name: "grep", category: "text", description: "Busca patrones complejos en archivos de texto", example: "grep -r 'error' /var/log", output: "/var/log/app.log:45: [ERROR] Connection failed\n/var/log/app.log:89: [ERROR] Timeout exceeded" },
-            { name: "chmod", category: "permissions", description: "Cambia permisos de archivos en formato octal", example: "chmod 755 script.sh", output: "✓ Permisos actualizados: -rwxr-xr-x" },
-            { name: "chown", category: "permissions", description: "Cambia propietario y grupo de archivos", example: "chown user:www-data /var/www", output: "✓ Propietario cambiado a user:www-data" },
-            { name: "ps", category: "process", description: "Lista todos los procesos del sistema", example: "ps aux | head -10", output: "USER PID %CPU %MEM VSZ RSS TTY STAT START TIME COMMAND\nroot 1 0.0 0.0 123456 567 ? Ss 08:00 0:02 /sbin/init\nuser 1234 2.1 1.5 234567 89012 ? Ssl 08:30 0:15 chrome" },
-            { name: "top", category: "process", description: "Monitor de procesos en tiempo real", example: "top -n 1", output: "top - 10:30:01 up 5 days, 3:22\nTasks: 156 total, 2 running, 154 sleeping\n%Cpu(s): 12.5 us, 3.2 sy, 0.0 ni\nMiB Mem : 16384.0 total, 8192.0 free" },
-            { name: "kill", category: "process", description: "Envía señales a procesos para terminarlos", example: "kill -9 12345", output: "✓ Proceso 12345 terminado forzosamente" },
-            { name: "ping", category: "network", description: "Verifica conectividad con latencia", example: "ping -c 4 google.com", output: "PING google.com (142.250.80.46): 56 data bytes\n64 bytes from 142.250.80.46: icmp_seq=0 ttl=115 time=14.2 ms\n64 bytes from 142.250.80.46: icmp_seq=1 ttl=115 time=13.8 ms" },
-            { name: "curl", category: "network", description: "Transfiere datos desde/hacia servidores", example: "curl -X GET https://api.github.com", output: "{\n  \"current_user_url\": \"https://api.github.com/user\",\n  \"repository_url\": \"https://api.github.com/repos\"\n}" },
-            { name: "ssh", category: "network", description: "Conexión segura encriptada a servidores remotos", example: "ssh -p 22 user@192.168.1.100", output: "Estableciendo conexión segura...\nAuthenticated using public key." },
-            { name: "tar", category: "filesystem", description: "Comprime y extrae archivos en múltiples formatos", example: "tar -czvf backup.tar.gz ./carpeta", output: "a ./carpeta\ncarpeta/file1.txt\ncarpeta/file2.txt\ntar: backup.tar.gz creado" },
-            { name: "find", category: "filesystem", description: "Busca archivos con criterios avanzados de búsqueda", example: "find . -name '*.log' -mtime -7", output: "./logs/app.log\n./logs/error.log\n./backup/old.log" },
-            { name: "df", category: "filesystem", description: "Muestra uso de disco de todos los sistemas de archivos", example: "df -h", output: "Filesystem      Size  Used Avail Use% Mounted on\n/dev/sda1       100G   45G   55G  45% /\ntmpfs           2.0G     0  2.0G   0% /dev/shm" }
+            { name: "ls", category: "filesystem", description: "Lista archivos y directorios. Usa -l para detalles, -a para ocultos, -h para tamaños legibles", example: "ls -lah", output: "total 64\ndrwxr-xr-x  5 user user 4096 May 05 10:00 .\ndrwxr-xr-x  1 user user 4096 May 05 09:00 ..\n-rw-r--r--  1 user user  220 May 05 10:00 .bashrc\ndrwxr-xr-x  2 user user 4096 May 05 10:00 Documents\n-rwxr-xr-x  1 user user  1024 May 05 10:00 script.sh" },
+            { name: "cd", category: "filesystem", description: "Cambia el directorio. Usa cd ~ para home, cd - para volver, cd .. para subir nivel", example: "cd ~/Documentos/Proyectos", output: "Cambiando al directorio: /home/user/Documentos/Proyectos" },
+            { name: "pwd", category: "filesystem", description: "Muestra el directorio actual (Print Working Directory). Útil para verificar tu ubicación", example: "pwd", output: "/home/user/Documentos/Linux" },
+            { name: "mkdir", category: "filesystem", description: "Crea directorios. -p crea padres intermedios automáticamente", example: "mkdir -p proyecto/src/components", output: "<i class=\"fas fa-check\"></i> Directorios creados: proyecto/src/components" },
+            { name: "rm", category: "filesystem", description: "Elimina archivos (-f fuerza) o directorios (-r recursivo). CUIDADO con rm -rf", example: "rm -rf carpeta_vieja", output: "<i class=\"fas fa-check\"></i> Eliminación completada" },
+            { name: "cp", category: "filesystem", description: "Copia archivos. -r para directorios, -i pregunta, -v verbose, -p preserva permisos", example: "cp -r origen/ destino/", output: "<i class=\"fas fa-check\"></i> Copia completada exitosamente" },
+            { name: "mv", category: "filesystem", description: "Mueve o renombra archivos. Si origen y destino están en misma carpeta, funciona como rename", example: "mv archivo.old nuevo_nombre.txt", output: "<i class=\"fas fa-check\"></i> Archivo renombrado: nuevo_nombre.txt" },
+            { name: "touch", category: "filesystem", description: "Crea archivos vacíos o actualiza timestamps. Útil para crear archivos o forzar更新时间", example: "touch nuevo_archivo.log", output: "<i class=\"fas fa-check\"></i> Archivo creado: nuevo_archivo.log" },
+            { name: "ln", category: "filesystem", description: "Crea enlaces. -s para simbólicos (acceden a rutas), sin -s para duros (mismo inodo)", example: "ln -s /ruta/origen enlace", output: "<i class=\"fas fa-check\"></i> Enlace simbólico creado: enlace -> /ruta/origen" },
+            { name: "du", category: "filesystem", description: "Muestra uso de disco. -h legible, -s total, -max-depth=N profundidad", example: "du -sh */", output: "1.2G    Documentos\n450M    Descargas\n2.1G    Proyectos" },
+            { name: "file", category: "filesystem", description: "Determina tipo de archivo por su contenido (magic bytes), no por extensión", example: "file imagen.jpg", output: "imagen.jpg: JPEG image data, EXIF standard" },
+            { name: "locate", category: "filesystem", description: "Búsqueda rápida por base de datos preindexada. Mucho más rápido que find pero requiere updatedb", example: "locate -i configuracion", output: "/etc/nginx/nginx.conf\n/home/user/.config/app/config.json" },
+            { name: "which", category: "filesystem", description: "Muestra ruta completa de ejecutables en PATH. Útil para verificar qué versión se usará", example: "which python3", output: "/usr/bin/python3" },
+            { name: "tar", category: "filesystem", description: "Comprime/extrae: -c crear, -x extraer, -v verbose, -f archivo, -z gzip, -j bzip2, -J xz", example: "tar -czvf backup.tar.gz ./carpeta", output: "a ./carpeta\ncarpeta/file1.txt\ncarpeta/file2.txt\ntar: backup.tar.gz creado" },
+            { name: "find", category: "filesystem", description: "Busca archivos en tiempo real: -name patrón, -type tipo, -mtime días, -size tamaño, -exec comando", example: "find . -name '*.log' -mtime -7", output: "./logs/app.log\n./logs/error.log\n./backup/old.log" },
+            { name: "df", category: "filesystem", description: "Muestra uso de disco de filesystems. -h legible (GB/MB), -T muestra tipo de filesystem", example: "df -h", output: "Filesystem      Size  Used Avail Use% Mounted on\n/dev/sda1       100G   45G   55G  45% /\ntmpfs           2.0G     0  2.0G   0% /dev/shm" },
+            { name: "cat", category: "text", description: "Muestra contenido de archivos. -n numera líneas. Útil para archivos pequeños", example: "cat config.json", output: "{\n  \"name\": \"linux-guide\",\n  \"version\": \"1.0.0\"\n}" },
+            { name: "head", category: "text", description: "Muestra primeras líneas (default 10). -n especifica cantidad. Útil para previsualizar logs", example: "head -n 20 servidor.log", output: "2026-05-01 08:00:01 Servidor iniciado\n2026-05-01 08:00:02 Cargando configuración..." },
+            { name: "tail", category: "text", description: "Muestra últimas líneas. -f sigue el archivo (perfecto para logs). -n cantidad de líneas", example: "tail -f /var/log/syslog", output: "May  5 10:30:01 server sshd[1234]: Accepted publickey\nMay  5 10:30:02 server systemd[1]: Started Session 12" },
+            { name: "less", category: "text", description: "Visor paginado bidireccional. / buscar, q salir, g/G inicio/fin. Más eficiente que cat para grandes archivos", example: "less -N archivo_grande.log", output: "     1  primera línea\n 1234  última línea visible" },
+            { name: "wc", category: "text", description: "Cuenta: -l líneas, -w palabras, -c bytes. Útil para análisis rápido o contar líneas de código", example: "wc -l *.txt", output: "   150 archivo1.txt\n    85 archivo2.txt\n   235 total" },
+            { name: "grep", category: "text", description: "Busca patrones (regex): -r recursivo, -i ignore case, -v invert match, -n números línea, -c contar", example: "grep -r 'error' /var/log", output: "/var/log/app.log:45: [ERROR] Connection failed\n/var/log/app.log:89: [ERROR] Timeout" },
+            { name: "sort", category: "text", description: "Ordena líneas: -r reverse, -n numérico, -u único. Útil con uniq para eliminar duplicados", example: "sort -n numeros.txt", output: "1\n2\n5\n8\n12\n23" },
+            { name: "uniq", category: "text", description: "Elimina líneas duplicadas ADYACENTES. Primero usa sort. -c cuenta ocurrencias, -d solo duplicados", example: "sort lista.txt | uniq -c", output: "   3 elemento1\n   1 elemento2\n   5 elemento3" },
+            { name: "cut", category: "text", description: "Extrae secciones: -d delimitador, -f campos, -c caracteres. Perfecto para CSV y archivos delimitados", example: "cut -d',' -f1,3 datos.csv", output: "nombre,edad\nJuan,25\nMaría,30" },
+            { name: "awk", category: "text", description: "Procesamiento de texto poderoso. '{print $1}' imprime campo 1, FS define separador", example: "awk -F: '{print $1, $NF}' /etc/passwd", output: "root /bin/bash\ndaemon /usr/sbin/nologin\nuser /bin/bash" },
+            { name: "sed", category: "text", description: "Editor stream: 's/antiguo/nuevo/' sustituye, '/patron/d' elimina, 'y/a/b/' transforma", example: "sed 's/antiguo/nuevo/g' archivo.txt", output: "Líneas con sustituciones aplicadas" },
+            { name: "diff", category: "text", description: "Compara archivos: -u unificado, -i ignora mayúsculas, -r recursivo para directorios", example: "diff -u v1.py v2.py", output: "--- v1.py\n+++ v2.py\n@@ -5,7 +5,7 @@\n-    print(\"Hello\")\n+    print(\"Hola Mundo\")" },
+            { name: "chmod", category: "permissions", description: "Cambia permisos: octal (755) o simbólico (u+rwx). Formato: usuario/grupo/otros (r=4,w=2,x=1)", example: "chmod 755 script.sh", output: "<i class=\"fas fa-check\"></i> Permisos actualizados: -rwxr-xr-x" },
+            { name: "chown", category: "permissions", description: "Cambia propietario y grupo (formato usuario:grupo). Necesita root. -R recursivo", example: "chown user:www-data /var/www", output: "<i class=\"fas fa-check\"></i> Propietario cambiado a user:www-data" },
+            { name: "sudo", category: "permissions", description: "Ejecuta como otro usuario (típicamente root). Configurado en /etc/sudoers. Registra comandos", example: "sudo apt update", output: "[sudo] password for user:\nLeyendo listas de paquetes... Listo" },
+            { name: "su", category: "permissions", description: "Cambia a otro usuario o root (-). Diferencia: su requiere contraseña del destino, sudo usa la tuya", example: "su - root", output: "Password: \nroot@server:~#" },
+            { name: "ps", category: "process", description: "Lista procesos: aux (todos con usuario), -ef (estándar), --sort=-cpu%mem ordena. Muestra PID, CPU, memoria", example: "ps aux | head -10", output: "USER PID %CPU %MEM VSZ RSS TTY STAT START TIME COMMAND\nroot 1 0.0 0.0 123456 567 ? Ss 08:00 0:02 /sbin/init" },
+            { name: "top", category: "process", description: "Monitor interactivo: CPU, memoria, procesos. 'k' kill, 'M' ordenar memoria, '1' CPUs. 'q' salir", example: "top -n 1", output: "top - 10:30:01 up 5 days\nTasks: 156 total, 2 running\n%Cpu(s): 12.5 us\nMiB Mem : 16384.0 total, 8192.0 free" },
+            { name: "htop", category: "process", description: "Top mejorado con colores y UI amigable. Busca, filtra, mata con teclas de función. Árbol de procesos", example: "htop", output: "  PID USER      %CPU %MEM  TIME+ Command\n 1234 user       12.5  1.5  0:15.32 chrome" },
+            { name: "kill", category: "process", description: "Envía señales: -15 TERM (limpio), -9 KILL (forzado), -1 HUP (reload). kill -l lista todas", example: "kill -9 12345", output: "<i class=\"fas fa-check\"></i> Proceso 12345 terminado forzosamente" },
+            { name: "killall", category: "process", description: "Mata todos los procesos con un nombre. -i confirmación, -q silenciar si no existe", example: "killall -9 chrome", output: "<i class=\"fas fa-check\"></i> Procesos de chrome terminados" },
+            { name: "jobs", category: "process", description: "Lista jobs en background. Muestra ID (entre corchetes), estado (Running/Stopped), comando", example: "jobs", output: "[1]-  Running    python script.py &\n[2]+  Stopped    vim archivo.txt" },
+            { name: "bg", category: "process", description: "Reanuda job detenido en background. Útil si olvidaste & al ejecutar comando largo", example: "bg %1", output: "[1] python script.py &" },
+            { name: "fg", category: "process", description: "Trae job de background al foreground. %1 referencia el job ID de jobs", example: "fg %1", output: "Proceso ejecutándose en foreground..." },
+            { name: "nohup", category: "process", description: "Ejecuta comando immune a hangup (cierre terminal). Ideal para tareas largas que sobrevivan desconexión", example: "nohup python script.py > output.log &", output: "[1] 12345\nnohup: appending output to 'nohup.out'" },
+            { name: "ping", category: "network", description: "Verifica conectividad y latencia. Envía ICMP Echo Request. -c paquetes, -i intervalo segundos", example: "ping -c 4 google.com", output: "PING google.com (142.250.80.46): 56 data bytes\n64 bytes from 142.250.80.46: icmp_seq=0 ttl=115 time=14.2 ms" },
+            { name: "curl", category: "network", description: "Transfiere datos HTTP/HTTPS/FTP/SFTP. Headers, métodos, autenticación, uploads. Ideal para APIs", example: "curl -X GET https://api.github.com", output: "{\n  \"current_user_url\": \"https://api.github.com/user\"\n}" },
+            { name: "wget", category: "network", description: "Descargador no interactivo. -r recursivo, -c continuar descarga, autenticación. Ideal para scripts", example: "wget -O archivo.zip https://ejemplo.com/descarga", output: "--2026-05-05 10:30:01--  https://ejemplo.com/descarga\nLength: 1048576 (1.0M)" },
+            { name: "ssh", category: "network", description: "Conexión segura a servidores remotos. Claves públicas/privadas para auth sin contraseña", example: "ssh -p 22 user@192.168.1.100", output: "Estableciendo conexión segura...\nAuthenticated using public key." },
+            { name: "scp", category: "network", description: "Copia segura entre sistemas via SSH. origen destino. -r directorios, -P puerto, -p timestamps", example: "scp archivo.txt user@servidor:/ruta/", output: "archivo.txt 100% 12KB 1.2MB/s 00:00" },
+            { name: "netstat", category: "network", description: "Estadísticas de red: conexiones (-t tcp, -u udp), tablas rutas (-r), interfaces (-i). Obsoleto, usa ss", example: "netstat -tuln", output: "Proto Recv-Q Send-Q Local Address Foreign Address State\ntcp 0 0 0.0.0.0:22 0.0.0.0:* LISTEN" },
+            { name: "ss", category: "network", description: "Reemplazo moderno de netstat. -t tcp, -u udp, -l listening, -p proceso, -n no resolver hosts", example: "ss -tulnp", output: "Netid State Local Address:Port Process\ntcp LISTEN 0.0.0.0:22 users:((\"sshd\",pid=1234))" },
+            { name: "ip", category: "network", description: "Gestión de red moderna. Reemplaza ifconfig/route. addr IPs, link interfaces, route rutas", example: "ip addr show", output: "1: lo: <LOOPBACK,UP> mtu 65536\ninet 127.0.0.1/8 scope host lo\n2: eth0: <BROADCAST,MULTICAST,UP>" },
+            { name: "traceroute", category: "network", description: "Rastreo de ruta de paquetes. Muestra cada salto, IP, latencia. Útil para diagnosticar problemas de red", example: "traceroute google.com", output: "traceroute to google.com (142.250.80.46), 30 hops max\n1 192.168.1.1 1.2 ms\n2 10.0.0.1 5.3 ms" },
+            { name: "nslookup", category: "network", description: "Consulta DNS para resolver dominios a IPs. Útil para verificar configuración DNS", example: "nslookup google.com", output: "Server: 8.8.8.8\nName: google.com\nAddress: 142.250.80.46" },
+            { name: "dig", category: "network", description: "Consultas DNS avanzadas. Muestra respuesta completa, tiempos, registros. -short简洁, tipos MX/TXT/CNAME", example: "dig +short mx gmail.com", output: "10 alt1.gmail-smtp-in.l.google.com.\n20 alt2.gmail-smtp-in.l.google.com." },
+            { name: "uname", category: "system", description: "Info sistema: -a todo, -n hostname, -r kernel, -s nombre kernel, -m arquitectura", example: "uname -a", output: "Linux server 5.15.0-generic #1 SMP x86_64 GNU/Linux" },
+            { name: "whoami", category: "system", description: "Muestra nombre de usuario actual. Útil en scripts para verificar identidad", example: "whoami", output: "developer" },
+            { name: "hostname", category: "system", description: "Muestra/establece hostname. -I todas las IPs, -i IP del hostname. Persiste en /etc/hostname", example: "hostname", output: "mi-servidor" },
+            { name: "uptime", category: "system", description: "Muestra tiempo activo del sistema, usuarios conectados y load average (1, 5, 15 min)", example: "uptime", output: "10:30:01 up 5 days, 3:22, 2 users, load average: 0.52, 0.58, 0.59" },
+            { name: "date", category: "system", description: "Muestra/establece fecha. Formato: date +\"%Y-%m-%d %H:%M:%S\". Útil para timestamps en scripts", example: "date +\"%Y-%m-%d_%H-%M\"", output: "2026-05-05_10-30" },
+            { name: "history", category: "system", description: "Historial de comandos. !n ejecuta comando n, !! último, Ctrl+R busca. En ~/.bash_history", example: "history | grep git", output: "234 git status\n235 git commit -m \"fix\"\n236 git push origin main" },
+            { name: "alias", category: "system", description: "Crea atajos para comandos frecuentes. Temporales (sesión). Para permanentes, añade a ~/.bashrc", example: "alias ll='ls -lah'", output: "<i class=\"fas fa-check\"></i> Alias creado: ll -> ls -lah" },
+            { name: "env", category: "system", description: "Muestra variables de entorno o ejecuta con variables modificadas. Útil para debugging", example: "env | grep PATH", output: "PATH=/usr/local/bin:/usr/bin:/bin\nHOME=/home/user" },
+            { name: "export", category: "system", description: "Establece variables para procesos hijos. export VAR=valor. Para persistir: ~/.bashrc o /etc/environment", example: "export PATH=$PATH:/nuevo/bin", output: "<i class=\"fas fa-check\"></i> Variable exportada: PATH" },
+            { name: "source", category: "system", description: "Ejecuta comandos de archivo en shell actual. Carga funciones/variables desde .bashrc. Equivale a .", example: "source ~/.bashrc", output: "<i class=\"fas fa-check\"></i> Configuración cargada" },
+            { name: "free", category: "system", description: "Muestra uso de memoria RAM y swap. -h legible, -s actualiza continuo, -l detalles de memoria", example: "free -h", output: "Mem: 16Gi 4.2Gi 8.1Gi 120Mi 3.7Gi 11Gi\nSwap: 2.0Gi 0B 2.0Gi" },
+            { name: "lsof", category: "system", description: "Lista archivos abiertos. Muestra qué procesos tienen abiertos. -i muestra conexiones de red", example: "lsof -i :80", output: "COMMAND PID USER FD TYPE DEVICE NODE NAME\nnginx 1234 root 6u IPv4 12345 TCP *:80 (LISTEN)" }
         ];
 
         function createParticles() {
@@ -707,7 +972,7 @@ Escribe un comando y presiona Enter para ver su magia en acción...</div>
                             <div class="terminal-output">${cmd.output}</div>
                         </div>
                     </div>
-                    <button class="try-btn" onclick="openPanel('${cmd.name}', '${cmd.example}', \`${cmd.output}\`)">▶ Probar Comando</button>
+                    <button class="try-btn" onclick="openPanel('${cmd.name}', '${cmd.example}', \`${cmd.output}\`)"><i class="fas fa-play"></i> Probar Comando</button>
                 `;
                 grid.appendChild(card);
             });
@@ -723,12 +988,13 @@ Escribe un comando y presiona Enter para ver su magia en acción...</div>
         function filterCommands() {
             const activeBtn = document.querySelector('.category-btn.active');
             const categoryMap = {
-                '全部 Todo': 'all',
-                '📁 Archivos': 'filesystem',
-                '⚙️ Procesos': 'process',
-                '🌐 Red': 'network',
-                '📝 Texto': 'text',
-                '🔐 Permisos': 'permissions'
+                'Todo': 'all',
+                'Archivos': 'filesystem',
+                'Procesos': 'process',
+                'Red': 'network',
+                'Texto': 'text',
+                'Permisos': 'permissions',
+                'Sistema': 'system'
             };
             const cat = categoryMap[activeBtn.textContent] || 'all';
             const search = document.getElementById('search').value;
@@ -740,7 +1006,7 @@ Escribe un comando y presiona Enter para ver su magia en acción...</div>
             const outputDiv = document.getElementById('terminalOutput');
             const input = document.getElementById('commandInput');
 
-            outputDiv.innerHTML = `📌 Comando: ${name}\n💻 Ejemplo: ${example}\n\n┌─ Salida ──────────────────────┐\n${output}\n└────────────────────────────────┘`;
+            outputDiv.innerHTML = `<i class="fas fa-tag"></i> Comando: ${name}\n<i class="fas fa-terminal"></i> Ejemplo: ${example}\n\n┌─ Salida ──────────────────────┐\n${output}\n└────────────────────────────────┘`;
             panel.classList.add('open');
             input.focus();
         }
@@ -753,7 +1019,7 @@ Escribe un comando y presiona Enter para ver su magia en acción...</div>
             if (event.key === 'Enter') {
                 const input = event.target.value;
                 const outputDiv = document.getElementById('terminalOutput');
-                outputDiv.innerHTML += `\n\n┌─ user@linux:~$ ${input} ───┐\n│ ✅ Simulacro completado!  │\n│ En un sistema Linux real, │\n│ este comando se ejecutaría │\n│ aquí mismo.               │\n└───────────────────────────┘`;
+                outputDiv.innerHTML += `\n\n┌─ user@linux:~$ ${input} ───┐\n│ <i class="fas fa-check"></i> Simulacro completado!  │\n│ En un sistema Linux real, │\n│ este comando se ejecutaria │\n│ aqui mismo.               │\n└───────────────────────────┘`;
                 event.target.value = '';
             }
         }
